@@ -1,5 +1,5 @@
-import { createRoot } from 'react-dom/client';
 import App from '@src/App';
+import { createRoot } from 'react-dom/client';
 import tailwindcssOutput from '../dist/tailwind-output.css?inline';
 
 const root = document.createElement('div');
@@ -30,4 +30,30 @@ if (navigator.userAgent.includes('Firefox')) {
 }
 
 shadowRoot.appendChild(rootIntoShadow);
-createRoot(rootIntoShadow).render(<App />);
+
+const observer = new MutationObserver(mutationsList => {
+  for (const mutation of mutationsList) {
+    if (mutation.type === 'childList') {
+      const elementNode = document.querySelector('nav[aria-label="Profile timelines"]');
+      if (elementNode) {
+        const parent = elementNode.parentNode as HTMLElement;
+        parent.insertBefore(root, elementNode);
+        createRoot(rootIntoShadow).render(<App />);
+        observer.disconnect();
+        break;
+      }
+    }
+  }
+});
+
+// 配置观察选项
+const config = { attributes: true, childList: true, subtree: true };
+
+// 选择要观察的目标节点
+const targetNode = document.body;
+
+// 开始观察目标节点
+observer.observe(targetNode, config);
+
+// 如果你以后想要停止观察
+// observer.disconnect();

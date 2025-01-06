@@ -1,5 +1,5 @@
-import fs from 'node:fs';
 import deepmerge from 'deepmerge';
+import fs from 'node:fs';
 
 const packageJson = JSON.parse(fs.readFileSync('../package.json', 'utf8'));
 
@@ -64,6 +64,7 @@ const manifest = withSidePanel({
     {
       matches: ['http://*/*', 'https://*/*', '<all_urls>'],
       js: ['content-ui/index.iife.js'],
+      run_at: 'document_idle',
     },
     {
       matches: ['http://*/*', 'https://*/*', '<all_urls>'],
